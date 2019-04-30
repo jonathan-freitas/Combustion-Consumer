@@ -7,9 +7,9 @@ A simple application in Swift, that consumes an external API (based on my person
 
 
 ## Table of Contents
-- [Overview](https://github.com/jonathan-freitas/Combustion-Consumer/tree/develop#overview-fire)
-- [Frameworks](https://github.com/jonathan-freitas/Combustion-Consumer/tree/develop#frameworks-satellite)
-- [Authors](https://github.com/jonathan-freitas/Combustion-Consumer/tree/develop#authors-globe_with_meridians)
+- [Overview](https://github.com/jonathan-freitas/Combustion-Consumer/tree/master#overview-fire)
+- [Frameworks](https://github.com/jonathan-freitas/Combustion-Consumer/tree/master#frameworks-satellite)
+- [Authors](https://github.com/jonathan-freitas/Combustion-Consumer/tree/master#authors-globe_with_meridians)
 
 ### Overview :fire:
 This project helped me on building the share module, in a simple but effective way. And also on requesting items from a external API using Alamofire.
