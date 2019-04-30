@@ -6,9 +6,10 @@
 A simple application in Swift, that consumes an external API (based on my personal Apiary) and lists all workers.
 
 
-## Table of Contents :telephone_receiver:
+## Table of Contents
 - [Overview](https://github.com/jonathan-freitas/Combustion-Consumer/tree/develop#overview-fire)
 - [Frameworks](https://github.com/jonathan-freitas/Combustion-Consumer/tree/develop#frameworks-satellite)
+- [Authors](https://github.com/jonathan-freitas/Combustion-Consumer/tree/develop#authors-globe_with_meridians)
 
 ### Overview :fire:
 This project helped me on building the share module, in a simple but effective way. And also on requesting items from a external API using Alamofire.
@@ -22,5 +23,9 @@ Alamofire is a great help to build requests in Swift, and it helps in a way that
 This helps a lot in downloading an image, especially if the image is bigger than you expected. You can even set a placeholder for the view while the download is progressing.
 - [Share](https://github.com/fabricioeus/ShareInstagram)
 I used this library as a founding to build my own, it's versality and usefulness helped me on building the worker that is now.
+
+### Authors :globe_with_meridians:
+- [Jonathan Freitas Ferreira](https://www.linkedin.com/in/jonathan-freitas/)
+
 ---
 April, 2019 - Brazil
