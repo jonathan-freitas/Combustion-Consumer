@@ -1,0 +1,6 @@
+framework module Pods_CombustionConsumer {
+  umbrella header "Pods-CombustionConsumer-umbrella.h"
+
+  export *
+  module * { export * }
+}
