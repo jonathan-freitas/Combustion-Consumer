@@ -3,7 +3,7 @@
 </div>
 
 # Combustion Consumer 
-A simple application in Swift, that consumes an external API (based on my personal Apiary) and lists all workers.
+A simple application in Swift, that consumes an external API (based on my personal [Apiary](https://apiary.io/)) and lists all workers.
 
 
 ## Table of Contents
