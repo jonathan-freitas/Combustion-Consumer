@@ -59,6 +59,7 @@ class ViewController: UITableViewController {
             
             let cell = tableView.dequeueReusableCell(withIdentifier: "WorkersTableViewCell", for: indexPath) as! WorkersTableViewCell
             cell.configuration(funcionario: object)
+            
             return cell
         }
         .disposed(by: self.disposeBag)
@@ -73,5 +74,6 @@ class ViewController: UITableViewController {
         })
         .drive()
         .disposed(by: disposeBag)
+        
     }
 }

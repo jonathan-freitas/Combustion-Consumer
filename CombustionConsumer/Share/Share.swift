@@ -6,10 +6,12 @@
 //  Copyright © 2019 Jonathan Freitas. All rights reserved.
 //
 
-import Foundation
 import UIKit
 import Photos
 import Social
+import MessageUI
+import FBSDKShareKit
+import Foundation
 
 public protocol ShareStoriesDelegate {
     func error(message: String)
@@ -29,11 +31,8 @@ class Share {
     
     public init() {}
 
-    func toInstagram(image: UIImage, title: String, subtitle: String, captions: String?) {
-        
-        if let captions = captions {
-            UIPasteboard.general.string = captions
-        }
+    /// Shares an image with title and subtitle via Instagram (feed and/or story).
+    func toInstagram(image: UIImage, title: String, subtitle: String, completionHandler: ((Bool) -> Void)? = nil) {
         
         PHPhotoLibrary.shared().performChanges({
             PHAssetChangeRequest.creationRequestForAsset(from: UIImageLibraries.returnImageToShare(waterMark: self.waterMark, image: image, title: title, subtitle: subtitle))
@@ -47,6 +46,9 @@ class Share {
                     let urlFeed = "instagram://library?LocalIdentifier=" + localIdentifier
                     guard let url = URL(string: urlFeed) else {
                         self.delegate?.error(message: "Could not open url")
+                        if let completion = completionHandler {
+                            completion(false)
+                        }
                         return
                     }
                     
@@ -55,10 +57,16 @@ class Share {
                             if #available(iOS 10.0, *) {
                                 UIApplication.shared.open(url, options: [:], completionHandler: { (success) in
                                     self.delegate?.success()
+                                    if let completion = completionHandler {
+                                        completion(true)
+                                    }
                                 })
                             } else {
                                 UIApplication.shared.openURL(url)
                                 self.delegate?.success()
+                                if let completion = completionHandler {
+                                    completion(true)
+                                }
                                 
                             }
                         } else {
@@ -68,40 +76,151 @@ class Share {
                 }
             } else if let error = error {
                 self.delegate?.error(message: error.localizedDescription)
+                if let completion = completionHandler {
+                    completion(false)
+                }
             }
             else {
                 self.delegate?.error(message: "Could not save the photo")
+                if let completion = completionHandler {
+                    completion(false)
+                }
             }
         })
     }
     
-    func toFacebook(viewController: UIViewController, initialText: String, link: URL) {
+    /// Shares a message and link via Facebook
+    func toFacebook(viewController: UIViewController, initialText: String, link: URL, completionHandler: ((Bool) -> Void)? = nil) {
+        
+        // Code for when you don't have FacebookAppID
         if let vc = SLComposeViewController(forServiceType: SLServiceTypeFacebook) {
             vc.setInitialText(initialText)
             vc.add(link)
             viewController.present(vc, animated: true)
+            
+            if let completion = completionHandler {
+                completion(true)
+            }
+            
+        } else {
+            if let completion = completionHandler {
+                completion(false)
+            }
         }
+        
+        // Code for when you have a FacebookAppID
+//        let linkContent = FBSDKShareLinkContent()
+//        linkContent.contentURL = link
+//        linkContent.quote = initialText
+//
+//        let dialog = FBSDKShareDialog()
+//        dialog.shareContent = linkContent
+//        dialog.shouldFailOnDataError = true
+//
+//        if dialog.canShow {
+//            dialog.show()
+//        } else {
+//            showError(viewController: viewController, message: "Error on opening Facebook!")
+//        }
+
     }
     
-    func toTwitter(tweetText: String, tweetURL: String) {
+    /// Shares a message and link via Twitter
+    func toTwitter(tweetText: String, tweetURL: String, completionHandler: ((Bool) -> Void)? = nil) {
         let shareString = "https://twitter.com/intent/tweet?text=\(tweetText)&url=\(tweetURL)"
         let escapedShareString = shareString.addingPercentEncoding(withAllowedCharacters: CharacterSet.urlQueryAllowed)!
         let url = URL(string: escapedShareString)!
         UIApplication.shared.open(url, options: [:], completionHandler: nil)
+        
+        if let completion = completionHandler {
+            completion(true)
+        }
     }
     
-    func toWhatsApp(message: String) {
+    /// Shares a message via WhatsApp
+    func toWhatsApp(message: String, completionHandler: ((Bool) -> Void)? = nil) {
         let escapedString = message.addingPercentEncoding(withAllowedCharacters:CharacterSet.urlQueryAllowed)
         let url = URL(string: "whatsapp://send?text=\(escapedString!)")
         
         if UIApplication.shared.canOpenURL(url! as URL) {
             UIApplication.shared.open(url! as URL, options: [:], completionHandler: nil)
+            if let completion = completionHandler {
+                completion(true)
+            }
         } else {
-            print("Error on sharing in WhatsApp! App not installed!")
+            if let completion = completionHandler {
+                completion(false)
+            }
         }
     }
     
-    func toOthers(viewController: UIViewController, text: String?, image: UIImage?) {
+    /// Shares a message and link via Messenger
+    func toMessenger(message: String, link: URL, completionHandler: ((Bool) -> Void)? = nil) {
+        
+        let linkContent = FBSDKShareLinkContent()
+        linkContent.contentURL = link
+        linkContent.quote = message
+    
+        let dialog = FBSDKMessageDialog()
+        dialog.shareContent = linkContent
+        dialog.shouldFailOnDataError = true
+        
+        if dialog.canShow {
+            dialog.show()
+            if let completion = completionHandler {
+                completion(true)
+            }
+        } else {
+            if let completion = completionHandler {
+                completion(false)
+            }
+        }
+        
+    }
+    
+    /// Shares a message and link via Telegram
+    func toTelegram(message: String, link: URL, completionHandler: ((Bool) -> Void)? = nil) {
+        
+        let urlString = "https://telegram.me/share/url?url=\(link)&text=\(message)"
+        let tgUrl = URL.init(string:urlString.addingPercentEncoding(withAllowedCharacters: CharacterSet.urlQueryAllowed)!)
+        if UIApplication.shared.canOpenURL(tgUrl!) {
+            UIApplication.shared.open(tgUrl!, options: [:], completionHandler: nil)
+            if let completion = completionHandler {
+                completion(true)
+            }
+        } else {
+            if let completion = completionHandler {
+                completion(false)
+            }
+        }
+        
+    }
+    
+    /// Shares the message and link via iMessage
+    func toiMessage(viewController: UIViewController, delegate: MFMessageComposeViewControllerDelegate, message: String, link: URL, completionHandler: ((Bool) -> Void)? = nil) {
+        
+        if (MFMessageComposeViewController.canSendText()) {
+            let controller = MFMessageComposeViewController()
+            
+            controller.body = "\(message) \(link)"
+            controller.recipients = []
+            controller.messageComposeDelegate = delegate
+            
+            viewController.present(controller, animated: true, completion: nil)
+            
+            if let completion = completionHandler {
+                completion(true)
+            }
+        } else {
+            if let completion = completionHandler {
+                completion(false)
+            }
+        }
+        
+    }
+    
+    /// Shows a modal with other alternatives of social media.
+    func toOthers(viewController: UIViewController, text: String?, image: UIImage?, completionHandler: ((Bool) -> Void)? = nil) {
         
         var objectsToShare = [AnyObject]()
         
@@ -116,59 +235,42 @@ class Share {
         if objectsToShare.count > 0 {
             let activityViewController = UIActivityViewController(activityItems: objectsToShare, applicationActivities: nil)
             activityViewController.popoverPresentationController?.sourceView = viewController.view
+            activityViewController.title = "Share"
             
-            activityViewController.excludedActivityTypes = [UIActivity.ActivityType.airDrop]
+            activityViewController.excludedActivityTypes = [UIActivity.ActivityType.airDrop,
+                                                            UIActivity.ActivityType.postToWeibo,
+                                                            UIActivity.ActivityType.print,
+                                                            UIActivity.ActivityType.assignToContact,
+                                                            UIActivity.ActivityType.saveToCameraRoll,
+                                                            UIActivity.ActivityType.addToReadingList,
+                                                            UIActivity.ActivityType.postToFlickr,
+                                                            UIActivity.ActivityType.postToVimeo,
+                                                            UIActivity.ActivityType.postToTencentWeibo]
             
             viewController.present(activityViewController, animated: true, completion: nil)
+            
+            if let completion = completionHandler {
+                completion(true)
+            }
         } else {
-            print("Error on sharing in others! Neither text or image was found!")
+            if let completion = completionHandler {
+                completion(false)
+            }
         }
     }
     
-//    func postToInstagramStories(data: NSData, image: UIImage) {
-//
-//        let colors = image.getColors()
-//
-//        DispatchQueue.main.async {
-//
-//            guard let url = self.instagramURL else {
-//                self.delegate?.error(message: "URL not valid")
-//                return
-//            }
-//
-//            if UIApplication.shared.canOpenURL(url) {
-//
-//                guard let urlScheme = self.instagramStoriesURL else {
-//                    self.delegate?.error(message: "URL not valid")
-//                    return
-//                }
-//
-//                let pasteboardItems = ["com.instagram.sharedSticker.stickerImage": image,
-//                                       "com.instagram.sharedSticker.backgroundTopColor" : colors.primary.toHexString(),
-//                                       "com.instagram.sharedSticker.backgroundBottomColor" : colors.primary.toHexString(),
-//                                       "com.instagram.sharedSticker.backgroundVideo": data,
-//                                       "com.instagram.sharedSticker.contentURL": self.deepLink] as [String : Any]
-//
-//                if #available(iOS 10.0, *) {
-//                    let pasteboardOptions = [UIPasteboard.OptionsKey.expirationDate : NSDate().addingTimeInterval(60 * 5)]
-//                    UIPasteboard.general.setItems([pasteboardItems], options: pasteboardOptions)
-//
-//                } else {
-//                    UIPasteboard.general.items = [pasteboardItems]
-//                }
-//                if #available(iOS 10.0, *) {
-//                    UIApplication.shared.open(urlScheme, options: [:], completionHandler: { (success) in
-//                        self.delegate?.success()
-//                    })
-//                } else {
-//                    UIApplication.shared.openURL(urlScheme)
-//                    self.delegate?.success()
-//                }
-//
-//            } else {
-//                self.delegate?.error(message: "Could not open instagram URL. Check if you have instagram installed and you configured your LSApplicationQueriesSchemes to enable instagram's url")
-//            }
-//        }
-//    }
-    
+    /// Simple function to copy a text to the clipboard.
+    func copyToClipboard(text: String, completionHandler: ((Bool) -> Void)? = nil) {
+        UIPasteboard.general.string = text
+        
+        if UIPasteboard.general.string == text {
+            if let completion = completionHandler {
+                completion(true)
+            }
+        } else {
+            if let completion = completionHandler {
+                completion(false)
+            }
+        }
+    }
 }

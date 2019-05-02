@@ -2,6 +2,20 @@ PODS:
   - Alamofire (4.8.0)
   - AlamofireImage (3.5.0):
     - Alamofire (~> 4.8)
+  - Bolts (1.9.0):
+    - Bolts/AppLinks (= 1.9.0)
+    - Bolts/Tasks (= 1.9.0)
+  - Bolts/AppLinks (1.9.0):
+    - Bolts/Tasks
+  - Bolts/Tasks (1.9.0)
+  - FBSDKCoreKit (4.44.1):
+    - Bolts (~> 1.9)
+  - FBSDKLoginKit (4.44.1):
+    - FBSDKCoreKit
+  - FBSDKPlacesKit (4.44.1):
+    - FBSDKCoreKit
+  - FBSDKShareKit (4.44.1):
+    - FBSDKCoreKit
   - Realm (3.12.0):
     - Realm/Headers (= 3.12.0)
   - Realm/Headers (3.12.0)
@@ -16,6 +30,10 @@ PODS:
 DEPENDENCIES:
   - Alamofire (~> 4.0)
   - AlamofireImage (~> 3.1)
+  - FBSDKCoreKit
+  - FBSDKLoginKit
+  - FBSDKPlacesKit
+  - FBSDKShareKit
   - RealmSwift
   - RxCocoa (~> 4.0)
   - RxSwift (~> 4.0)
@@ -24,6 +42,11 @@ SPEC REPOS:
   https://github.com/cocoapods/specs.git:
     - Alamofire
     - AlamofireImage
+    - Bolts
+    - FBSDKCoreKit
+    - FBSDKLoginKit
+    - FBSDKPlacesKit
+    - FBSDKShareKit
     - Realm
     - RealmSwift
     - RxAtomic
@@ -33,12 +56,17 @@ SPEC REPOS:
 SPEC CHECKSUMS:
   Alamofire: 3ec537f71edc9804815215393ae2b1a8ea33a844
   AlamofireImage: 1aea346f4dda2f6c67622fa5a89fcbb80d79cc16
+  Bolts: ac6567323eac61e203f6a9763667d0f711be34c8
+  FBSDKCoreKit: a823ae35bdb60ebb8d7a7e51abe7c5d87d2bfced
+  FBSDKLoginKit: 54ae59987f2a8703021557c90a9aebb9e5c2bef6
+  FBSDKPlacesKit: 51ea17fa8c831088177676ce10b740e4497934b0
+  FBSDKShareKit: 526d4cfb713d24855fa23d0dd74e191accd3a720
   Realm: cdaef23c4ddb36ab1ddffed23f5a7f3332fc5585
   RealmSwift: 5576324033f0aa5ef1e0a839a3da2281dff47a7f
   RxAtomic: eacf60db868c96bfd63320e28619fe29c179656f
   RxCocoa: df63ebf7b9a70d6b4eeea407ed5dd4efc8979749
   RxSwift: 5976ecd04fc2fefd648827c23de5e11157faa973
 
-PODFILE CHECKSUM: c23ec6151a0550677036cd550f9cca10291da590
+PODFILE CHECKSUM: 284b8f7fed17eb9c8a4fde4d360043fe37d74148
 
-COCOAPODS: 1.5.3
+COCOAPODS: 1.6.0

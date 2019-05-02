@@ -7,6 +7,7 @@
 //
 
 import UIKit
+import MessageUI
 import AlamofireImage
 
 class ShowDetailsController: UIViewController {
@@ -41,19 +42,41 @@ class ShowDetailsController: UIViewController {
         
         switch sender.tag {
         case 0:
-            share.toInstagram(image: image, title: funcionario!.nome, subtitle: funcionario!.funcao, captions: nil)
+            share.toInstagram(image: image, title: funcionario!.nome, subtitle: funcionario!.funcao)
         case 1:
-            share.toFacebook(viewController: self, initialText: funcionario!.nome, link: URL(string: "www.google.com")!)
+            share.toFacebook(viewController: self, initialText: funcionario!.nome, link: URL(string: "https://www.apple.com")!)
         case 2:
-            share.toTwitter(tweetText: funcionario!.nome, tweetURL: "www.google.com")
+            share.toTwitter(tweetText: funcionario!.nome, tweetURL: "https://www.apple.com")
         case 3:
-            share.toWhatsApp(message: "Look: \(funcionario!.nome)! www.google.com")
-        case 4:
+            share.toWhatsApp(message: "Look: \(funcionario!.nome)! https://www.apple.com")
+        case 5:
+            share.toMessenger(message: "Look!", link: URL(string: "https://www.apple.com")!)
+        case 6:
+            share.toTelegram(message: "Look!", link: URL(string: "https://www.apple.com")!)
+        case 7:
+            share.toiMessage(viewController: self, delegate: self, message: "Look!", link: URL(string: "https://www.apple.com")!)
+        case 8:
+            share.copyToClipboard(text: "Louco!", completionHandler: { result in
+                
+                let alert = UIAlertController(title: result ? "Captions copied" : "Captions error",
+                                              message: result ? "The captions was copied to the clipboard." : "There was an error on copying the captions.",
+                                              preferredStyle: .alert)
+                let cancel = UIAlertAction(title: "Ok", style: .cancel, handler: nil)
+                alert.addAction(cancel)
+                self.present(alert, animated: true, completion: nil)
+                
+            })
+        case 9:
             share.toOthers(viewController: self, text: nil, image: image)
         default:
             break
         }
-    
+
     }
 }
 
+extension ShowDetailsController: MFMessageComposeViewControllerDelegate {
+    func messageComposeViewController(_ controller: MFMessageComposeViewController, didFinishWith result: MessageComposeResult) {
+        controller.dismiss(animated: true, completion: nil)
+    }
+}
