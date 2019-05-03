@@ -7,7 +7,7 @@ target 'CombustionConsumer' do
     pod ‘Alamofire’, ‘~> 4.0’
     pod ‘AlamofireImage’, ‘~> 3.1’
     
-    # RX
+    # RX & Realm
     pod ‘RealmSwift’
     pod 'RxSwift', '~> 4.0'
     pod 'RxCocoa', '~> 4.0'

@@ -58,7 +58,7 @@ class ShowDetailsController: UIViewController {
         case 8:
             share.copyToClipboard(text: "Louco!", completionHandler: { result in
                 
-                let alert = UIAlertController(title: result ? "Captions copied" : "Captions error",
+                let alert = UIAlertController(title:   result ? "Captions copied"                           : "Captions error",
                                               message: result ? "The captions was copied to the clipboard." : "There was an error on copying the captions.",
                                               preferredStyle: .alert)
                 let cancel = UIAlertAction(title: "Ok", style: .cancel, handler: nil)
